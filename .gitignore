@@ -1,0 +1,13 @@
+/.metadata/
+
+# eclipse
+.project
+.classpath
+.settings/
+
+# build
+bin/
+src/bin/
+
+# java
+*.class
