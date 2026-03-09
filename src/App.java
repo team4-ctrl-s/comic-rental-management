@@ -8,24 +8,24 @@ public class App {
         sc = new Scanner(System.in);
     }
 
-    // ÇÁ·Î±×·¥ ½ÇÇà ¸Ş¼­µå
+    // í”„ë¡œê·¸ë¨ ì‹¤í–‰ ë©”ì„œë“œ
     public void run() {
-    	System.out.println("== ¸¸È­Ã¥ ´ë¿©Á¡ ÇÁ·Î±×·¥ ==");
+    	System.out.println("== ë§Œí™”ì±… ëŒ€ì—¬ì  í”„ë¡œê·¸ë¨ ==");
         showCommandList(); 
         
         while (true) {
-            System.out.print("¸í·É¾î: ");
+            System.out.print("ëª…ë ¹ì–´: ");
             String command = sc.nextLine();
 
             Rq rq = new Rq(command);
 
-            // exit ÀÔ·Â ½Ã ÇÁ·Î±×·¥ Á¾·á
+            // exit ì…ë ¥ ì‹œ í”„ë¡œê·¸ë¨ ì¢…ë£Œ
             if (rq.getActionName().equals("exit")) {
-                System.out.println("ÇÁ·Î±×·¥À» Á¾·áÇÕ´Ï´Ù.");
+                System.out.println("í”„ë¡œê·¸ë¨ì„ ì¢…ë£Œí•©ë‹ˆë‹¤.");
                 break;
             }
 
-            // ¸í·É¾îº° ±â´É ½ÇÇà
+            // ëª…ë ¹ì–´ë³„ ê¸°ëŠ¥ ì‹¤í–‰
             doAction(rq);
 
             System.out.println();
@@ -35,54 +35,54 @@ public class App {
     }
     
     // =========================
-    // ¸í·É¾î ¸ñ·Ï Ãâ·Â
+    // ëª…ë ¹ì–´ ëª©ë¡ ì¶œë ¥
     // =========================
     private void showCommandList() {
-    	System.out.println("==== »ç¿ë °¡´ÉÇÑ ¸í·É¾î ====");
+    	System.out.println("==== ì‚¬ìš© ê°€ëŠ¥í•œ ëª…ë ¹ì–´ ====");
 
-    	System.out.println("[¸¸È­Ã¥]");
-    	System.out.println("comic-add                : ¸¸È­Ã¥ µî·Ï");
-    	System.out.println("comic-list               : ¸¸È­Ã¥ ¸ñ·Ï");
-    	System.out.println("comic-detail [id]        : ¸¸È­Ã¥ »ó¼¼º¸±â");
-    	System.out.println("comic-update [id]        : ¸¸È­Ã¥ ¼öÁ¤");
-    	System.out.println("comic-delete [id]        : ¸¸È­Ã¥ »èÁ¦");
-
-    	System.out.println();
-
-    	System.out.println("[È¸¿ø]");
-    	System.out.println("member-add               : È¸¿ø µî·Ï");
-    	System.out.println("member-list              : È¸¿ø ¸ñ·Ï");
+    	System.out.println("[ë§Œí™”ì±…]");
+    	System.out.println("comic-add                : ë§Œí™”ì±… ë“±ë¡");
+    	System.out.println("comic-list               : ë§Œí™”ì±… ëª©ë¡");
+    	System.out.println("comic-detail [id]        : ë§Œí™”ì±… ìƒì„¸ë³´ê¸°");
+    	System.out.println("comic-update [id]        : ë§Œí™”ì±… ìˆ˜ì •");
+    	System.out.println("comic-delete [id]        : ë§Œí™”ì±… ì‚­ì œ");
 
     	System.out.println();
 
-    	System.out.println("[´ë¿©]");
-    	System.out.println("rent [comicId] [memberId] : ¸¸È­Ã¥ ´ë¿©");
-    	System.out.println("return [rentalId]         : ¸¸È­Ã¥ ¹İ³³");
-    	System.out.println("rental-list               : ´ë¿© ¸ñ·Ï");
+    	System.out.println("[íšŒì›]");
+    	System.out.println("member-add               : íšŒì› ë“±ë¡");
+    	System.out.println("member-list              : íšŒì› ëª©ë¡");
 
     	System.out.println();
 
-    	System.out.println("[±âÅ¸]");
-    	System.out.println("help                     : ¸í·É¾î ¸ñ·Ï");
-    	System.out.println("exit                     : ÇÁ·Î±×·¥ Á¾·á");
+    	System.out.println("[ëŒ€ì—¬]");
+    	System.out.println("rent [comicId] [memberId] : ë§Œí™”ì±… ëŒ€ì—¬");
+    	System.out.println("return [rentalId]         : ë§Œí™”ì±… ë°˜ë‚©");
+    	System.out.println("rental-list               : ëŒ€ì—¬ ëª©ë¡");
+
+    	System.out.println();
+
+    	System.out.println("[ê¸°íƒ€]");
+    	System.out.println("help                     : ëª…ë ¹ì–´ ëª©ë¡");
+    	System.out.println("exit                     : í”„ë¡œê·¸ë¨ ì¢…ë£Œ");
 
     	System.out.println("=========================");
     }
 
-    // ¸í·É¾î¿¡ µû¶ó ±â´ÉÀ» ºĞ±âÇÏ´Â ¸Ş¼­µå
+    // ëª…ë ¹ì–´ì— ë”°ë¼ ê¸°ëŠ¥ì„ ë¶„ê¸°í•˜ëŠ” ë©”ì„œë“œ
     private void doAction(Rq rq) {
         switch (rq.getActionName()) {
 
-            // ¾Æ¹« ÀÔ·Âµµ ¾È ÇßÀ» ¶§
+            // ì•„ë¬´ ì…ë ¥ë„ ì•ˆ í–ˆì„ ë•Œ
             case "":
-                System.out.println("¸í·É¾î¸¦ ÀÔ·ÂÇØÁÖ¼¼¿ä.");
+                System.out.println("ëª…ë ¹ì–´ë¥¼ ì…ë ¥í•´ì£¼ì„¸ìš”.");
                 break;
              
             case "help":
             	showCommandList();
                 break;
           
-            // ¸¸È­Ã¥ °ü·Ã ±â´É
+            // ë§Œí™”ì±… ê´€ë ¨ ê¸°ëŠ¥
             case "comic-add":
                 actionComicAdd();
                 break;
@@ -103,7 +103,7 @@ public class App {
                 actionComicDelete(rq);
                 break;
 
-            // È¸¿ø °ü·Ã ±â´É
+            // íšŒì› ê´€ë ¨ ê¸°ëŠ¥
             case "member-add":
                 actionMemberAdd();
                 break;
@@ -112,7 +112,7 @@ public class App {
                 actionMemberList();
                 break;
 
-            // ´ë¿© / ¹İ³³ °ü·Ã ±â´É
+            // ëŒ€ì—¬ / ë°˜ë‚© ê´€ë ¨ ê¸°ëŠ¥
             case "rent":
                 actionRent(rq);
                 break;
@@ -125,90 +125,90 @@ public class App {
                 actionRentalList();
                 break;
 
-            // ¾ø´Â ¸í·É¾î ÀÔ·Â ½Ã
+            // ì—†ëŠ” ëª…ë ¹ì–´ ì…ë ¥ ì‹œ
             default:
-                System.out.println("Á¸ÀçÇÏÁö ¾Ê´Â ¸í·É¾îÀÔ´Ï´Ù.");
+                System.out.println("ì¡´ì¬í•˜ì§€ ì•ŠëŠ” ëª…ë ¹ì–´ì…ë‹ˆë‹¤.");
                 break;
         }
     }
 
     // =========================
-    // ¸¸È­Ã¥ µî·Ï
+    // ë§Œí™”ì±… ë“±ë¡
     // comic-add
     // =========================
     private void actionComicAdd() {
-        System.out.print("Á¦¸ñ: ");
+        System.out.print("ì œëª©: ");
         String title = sc.nextLine();
 
-        System.out.print("±Ç¼ö: ");
+        System.out.print("ê¶Œìˆ˜: ");
         String volumeStr = sc.nextLine();
 
-        System.out.print("ÀÛ°¡: ");
+        System.out.print("ì‘ê°€: ");
         String author = sc.nextLine();
 
         int volume;
         try {
             volume = Integer.parseInt(volumeStr);
         } catch (NumberFormatException e) {
-            System.out.println("±Ç¼ö´Â ¼ıÀÚ·Î ÀÔ·ÂÇØÁÖ¼¼¿ä.");
+            System.out.println("ê¶Œìˆ˜ëŠ” ìˆ«ìë¡œ ì…ë ¥í•´ì£¼ì„¸ìš”.");
             return;
         }
 
         // TODO:
-        // ComicRepository.addComic(title, volume, author) È£Ãâ
-        // ½ÇÁ¦ DB ÀúÀå ÈÄ »ı¼ºµÈ id ¹Ş¾Æ¼­ Ãâ·Â
+        // ComicRepository.addComic(title, volume, author) í˜¸ì¶œ
+        // ì‹¤ì œ DB ì €ì¥ í›„ ìƒì„±ëœ id ë°›ì•„ì„œ ì¶œë ¥
 
-        System.out.println("=> ¸¸È­Ã¥ÀÌ µî·ÏµÇ¾ú½À´Ï´Ù. (id=1)");
+        System.out.println("=> ë§Œí™”ì±…ì´ ë“±ë¡ë˜ì—ˆìŠµë‹ˆë‹¤. (id=1)");
     }
 
     // =========================
-    // ¸¸È­Ã¥ ¸ñ·Ï
+    // ë§Œí™”ì±… ëª©ë¡
     // comic-list
     // =========================
     private void actionComicList() {
         // TODO:
-        // ComicRepository.listComics() È£Ãâ
-        // DB¿¡¼­ ÀüÃ¼ ¸ñ·Ï Á¶È¸ ÈÄ Ãâ·Â
+        // ComicRepository.listComics() í˜¸ì¶œ
+        // DBì—ì„œ ì „ì²´ ëª©ë¡ ì¡°íšŒ í›„ ì¶œë ¥
 
-    	System.out.println("¹øÈ£ | Á¦¸ñ | ±Ç¼ö | ÀÛ°¡ | »óÅÂ | µî·ÏÀÏ");
+    	System.out.println("ë²ˆí˜¸ | ì œëª© | ê¶Œìˆ˜ | ì‘ê°€ | ìƒíƒœ | ë“±ë¡ì¼");
         System.out.println("--------------------------------------------------");
-        System.out.println("1 | ½½·¥µ¢Å© | 1 | ÀÌ³ë¿ì¿¡ ´ÙÄÉÈ÷ÄÚ | ´ë¿©°¡´É | 2026-03-03");
+        System.out.println("1 | ìŠ¬ë¨ë©í¬ | 1 | ì´ë…¸ìš°ì— ë‹¤ì¼€íˆì½” | ëŒ€ì—¬ê°€ëŠ¥ | 2026-03-03");
     }
 
     // =========================
-    // ¸¸È­Ã¥ »ó¼¼º¸±â
+    // ë§Œí™”ì±… ìƒì„¸ë³´ê¸°
     // comic-detail [id]
     // =========================
     private void actionComicDetail(Rq rq) {
         if (rq.getArgsCount() < 1) {
-            System.out.println("»ç¿ë¹ı: comic-detail [id]");
+            System.out.println("ì‚¬ìš©ë²•: comic-detail [id]");
             return;
         }
 
         String comicId = rq.getArg(0);
 
-        // ¼ıÀÚÀÎÁö ±âº» °ËÁõ
+        // ìˆ«ìì¸ì§€ ê¸°ë³¸ ê²€ì¦
         try {
             Integer.parseInt(comicId);
         } catch (NumberFormatException e) {
-            System.out.println("¸¸È­Ã¥ ¹øÈ£´Â ¼ıÀÚ·Î ÀÔ·ÂÇØÁÖ¼¼¿ä.");
+            System.out.println("ë§Œí™”ì±… ë²ˆí˜¸ëŠ” ìˆ«ìë¡œ ì…ë ¥í•´ì£¼ì„¸ìš”.");
             return;
         }
 
         // TODO:
-        // ComicRepository.showComicDetail(comicId) È£Ãâ
+        // ComicRepository.showComicDetail(comicId) í˜¸ì¶œ
 
-        System.out.println("[¸¸È­Ã¥ »ó¼¼º¸±â ±â´É ¿¬°á ¿¹Á¤]");
-        System.out.println("ÀÔ·ÂÇÑ ¸¸È­Ã¥ ¹øÈ£: " + comicId);
+        System.out.println("[ë§Œí™”ì±… ìƒì„¸ë³´ê¸° ê¸°ëŠ¥ ì—°ê²° ì˜ˆì •]");
+        System.out.println("ì…ë ¥í•œ ë§Œí™”ì±… ë²ˆí˜¸: " + comicId);
     }
 
     // =========================
-    // ¸¸È­Ã¥ ¼öÁ¤
+    // ë§Œí™”ì±… ìˆ˜ì •
     // comic-update [id]
     // =========================
     private void actionComicUpdate(Rq rq) {
         if (rq.getArgsCount() < 1) {
-            System.out.println("»ç¿ë¹ı: comic-update [id]");
+            System.out.println("ì‚¬ìš©ë²•: comic-update [id]");
             return;
         }
 
@@ -217,40 +217,40 @@ public class App {
         try {
             Integer.parseInt(comicId);
         } catch (NumberFormatException e) {
-            System.out.println("¸¸È­Ã¥ ¹øÈ£´Â ¼ıÀÚ·Î ÀÔ·ÂÇØÁÖ¼¼¿ä.");
+            System.out.println("ë§Œí™”ì±… ë²ˆí˜¸ëŠ” ìˆ«ìë¡œ ì…ë ¥í•´ì£¼ì„¸ìš”.");
             return;
         }
 
-        System.out.print("»õ Á¦¸ñ: ");
+        System.out.print("ìƒˆ ì œëª©: ");
         String newTitle = sc.nextLine();
 
-        System.out.print("»õ ±Ç¼ö: ");
+        System.out.print("ìƒˆ ê¶Œìˆ˜: ");
         String newVolumeStr = sc.nextLine();
 
-        System.out.print("»õ ÀÛ°¡: ");
+        System.out.print("ìƒˆ ì‘ê°€: ");
         String newAuthor = sc.nextLine();
 
         int newVolume;
         try {
             newVolume = Integer.parseInt(newVolumeStr);
         } catch (NumberFormatException e) {
-            System.out.println("±Ç¼ö´Â ¼ıÀÚ·Î ÀÔ·ÂÇØÁÖ¼¼¿ä.");
+            System.out.println("ê¶Œìˆ˜ëŠ” ìˆ«ìë¡œ ì…ë ¥í•´ì£¼ì„¸ìš”.");
             return;
         }
 
         // TODO:
-        // ComicRepository.updateComic(comicId, newTitle, newVolume, newAuthor) È£Ãâ
+        // ComicRepository.updateComic(comicId, newTitle, newVolume, newAuthor) í˜¸ì¶œ
 
-        System.out.println("=> ¸¸È­Ã¥ÀÌ ¼öÁ¤µÇ¾ú½À´Ï´Ù. (id=" + comicId + ")");
+        System.out.println("=> ë§Œí™”ì±…ì´ ìˆ˜ì •ë˜ì—ˆìŠµë‹ˆë‹¤. (id=" + comicId + ")");
     }
 
     // =========================
-    // ¸¸È­Ã¥ »èÁ¦
+    // ë§Œí™”ì±… ì‚­ì œ
     // comic-delete [id]
     // =========================
     private void actionComicDelete(Rq rq) {
         if (rq.getArgsCount() < 1) {
-            System.out.println("»ç¿ë¹ı: comic-delete [id]");
+            System.out.println("ì‚¬ìš©ë²•: comic-delete [id]");
             return;
         }
 
@@ -259,53 +259,53 @@ public class App {
         try {
             Integer.parseInt(comicId);
         } catch (NumberFormatException e) {
-            System.out.println("¸¸È­Ã¥ ¹øÈ£´Â ¼ıÀÚ·Î ÀÔ·ÂÇØÁÖ¼¼¿ä.");
+            System.out.println("ë§Œí™”ì±… ë²ˆí˜¸ëŠ” ìˆ«ìë¡œ ì…ë ¥í•´ì£¼ì„¸ìš”.");
             return;
         }
 
         // TODO:
-        // ComicRepository.deleteComic(comicId) È£Ãâ
+        // ComicRepository.deleteComic(comicId) í˜¸ì¶œ
 
-        System.out.println("=> ¸¸È­Ã¥ÀÌ »èÁ¦µÇ¾ú½À´Ï´Ù. (id=" + comicId + ")");
+        System.out.println("=> ë§Œí™”ì±…ì´ ì‚­ì œë˜ì—ˆìŠµë‹ˆë‹¤. (id=" + comicId + ")");
     }
 
     // =========================
-    // È¸¿ø µî·Ï
+    // íšŒì› ë“±ë¡
     // member-add
     // =========================
     private void actionMemberAdd() {
-        System.out.print("ÀÌ¸§: ");
+        System.out.print("ì´ë¦„: ");
         String name = sc.nextLine();
 
-        System.out.print("ÀüÈ­¹øÈ£: ");
+        System.out.print("ì „í™”ë²ˆí˜¸: ");
         String phone = sc.nextLine();
 
         // TODO:
-        // MemberRepository.addMember(name, phone) È£Ãâ
+        // MemberRepository.addMember(name, phone) í˜¸ì¶œ
 
-        System.out.println("=> È¸¿øÀÌ µî·ÏµÇ¾ú½À´Ï´Ù. (id=1)");
+        System.out.println("=> íšŒì›ì´ ë“±ë¡ë˜ì—ˆìŠµë‹ˆë‹¤. (id=1)");
     }
 
     // =========================
-    // È¸¿ø ¸ñ·Ï
+    // íšŒì› ëª©ë¡
     // member-list
     // =========================
     private void actionMemberList() {
         // TODO:
-        // MemberRepository.listMembers() È£Ãâ
+        // MemberRepository.listMembers() í˜¸ì¶œ
 
-        System.out.println("È¸¿øid | ÀÌ¸§ | ÀüÈ­¹øÈ£ | µî·ÏÀÏ");
+        System.out.println("íšŒì›id | ì´ë¦„ | ì „í™”ë²ˆí˜¸ | ë“±ë¡ì¼");
         System.out.println("--------------------------------------");
-        System.out.println("1 | ¿¡¹Ğ¸® | 010-1111-2222 | 2026-03-03");
+        System.out.println("1 | ì—ë°€ë¦¬ | 010-1111-2222 | 2026-03-03");
     }
 
     // =========================
-    // ´ë¿©
+    // ëŒ€ì—¬
     // rent [comicId] [memberId]
     // =========================
     private void actionRent(Rq rq) {
         if (rq.getArgsCount() < 2) {
-            System.out.println("»ç¿ë¹ı: rent [comicId] [memberId]");
+            System.out.println("ì‚¬ìš©ë²•: rent [comicId] [memberId]");
             return;
         }
 
@@ -316,24 +316,24 @@ public class App {
             Integer.parseInt(comicId);
             Integer.parseInt(memberId);
         } catch (NumberFormatException e) {
-            System.out.println("¸¸È­Ã¥ ¹øÈ£¿Í È¸¿ø ¹øÈ£´Â ¼ıÀÚ·Î ÀÔ·ÂÇØÁÖ¼¼¿ä.");
+            System.out.println("ë§Œí™”ì±… ë²ˆí˜¸ì™€ íšŒì› ë²ˆí˜¸ëŠ” ìˆ«ìë¡œ ì…ë ¥í•´ì£¼ì„¸ìš”.");
             return;
         }
 
         // TODO:
-        // RentalRepository.rentComic(comicId, memberId) È£Ãâ
-        // ´ë¿©Áß ¿©ºÎ È®ÀÎ, È¸¿ø Á¸Àç ¿©ºÎ È®ÀÎ, ´ë¿© Ã³¸®
+        // RentalRepository.rentComic(comicId, memberId) í˜¸ì¶œ
+        // ëŒ€ì—¬ì¤‘ ì—¬ë¶€ í™•ì¸, íšŒì› ì¡´ì¬ ì—¬ë¶€ í™•ì¸, ëŒ€ì—¬ ì²˜ë¦¬
 
-        System.out.println("=> ´ë¿© ¿Ï·á: [´ë¿©id=1] ¸¸È­(" + comicId + ") ¡æ È¸¿ø(" + memberId + ")");
+        System.out.println("=> ëŒ€ì—¬ ì™„ë£Œ: [ëŒ€ì—¬id=1] ë§Œí™”(" + comicId + ") â†’ íšŒì›(" + memberId + ")");
     }
 
     // =========================
-    // ¹İ³³
+    // ë°˜ë‚©
     // return [rentalId]
     // =========================
     private void actionReturn(Rq rq) {
         if (rq.getArgsCount() < 1) {
-            System.out.println("»ç¿ë¹ı: return [rentalId]");
+            System.out.println("ì‚¬ìš©ë²•: return [rentalId]");
             return;
         }
 
@@ -342,27 +342,27 @@ public class App {
         try {
             Integer.parseInt(rentalId);
         } catch (NumberFormatException e) {
-            System.out.println("´ë¿© ¹øÈ£´Â ¼ıÀÚ·Î ÀÔ·ÂÇØÁÖ¼¼¿ä.");
+            System.out.println("ëŒ€ì—¬ ë²ˆí˜¸ëŠ” ìˆ«ìë¡œ ì…ë ¥í•´ì£¼ì„¸ìš”.");
             return;
         }
 
         // TODO:
-        // RentalRepository.returnComic(rentalId) È£Ãâ
-        // ÀÌ¹Ì ¹İ³³µÈ °ÇÀÎÁö È®ÀÎ ÈÄ ¹İ³³ Ã³¸®
+        // RentalRepository.returnComic(rentalId) í˜¸ì¶œ
+        // ì´ë¯¸ ë°˜ë‚©ëœ ê±´ì¸ì§€ í™•ì¸ í›„ ë°˜ë‚© ì²˜ë¦¬
 
-        System.out.println("=> ¹İ³³ ¿Ï·á: ´ë¿©id=" + rentalId);
+        System.out.println("=> ë°˜ë‚© ì™„ë£Œ: ëŒ€ì—¬id=" + rentalId);
     }
 
     // =========================
-    // ´ë¿© ¸ñ·Ï
+    // ëŒ€ì—¬ ëª©ë¡
     // rental-list
     // =========================
     private void actionRentalList() {
         // TODO:
-        // RentalRepository.listRentals() È£Ãâ
-        // ÀüÃ¼ / ¹Ì¹İ³³ ¿É¼ÇÀº ³ªÁß¿¡ È®Àå °¡´É
+        // RentalRepository.listRentals() í˜¸ì¶œ
+        // ì „ì²´ / ë¯¸ë°˜ë‚© ì˜µì…˜ì€ ë‚˜ì¤‘ì— í™•ì¥ ê°€ëŠ¥
 
-        System.out.println("´ë¿©id | ¸¸È­id | È¸¿øid | ´ë¿©ÀÏ | ¹İ³³ÀÏ");
+        System.out.println("ëŒ€ì—¬id | ë§Œí™”id | íšŒì›id | ëŒ€ì—¬ì¼ | ë°˜ë‚©ì¼");
         System.out.println("------------------------------------------------");
         System.out.println("1 | 1 | 1 | 2026-03-03 | -");
     }

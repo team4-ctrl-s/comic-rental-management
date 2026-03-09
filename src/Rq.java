@@ -1,21 +1,21 @@
 public class Rq {
     
-	// ¸í·É¾î ÀÌ¸§À» ÀúÀå 
+	// ëª…ë ¹ì–´ ì´ë¦„ì„ ì €ì¥ 
 	private String actionName;
 	
-	// ¸í·É¾î µÚ¿¡ ºÙ´Â °ªÀ» ÀúÀå
+	// ëª…ë ¹ì–´ ë’¤ì— ë¶™ëŠ” ê°’ì„ ì €ì¥
     private String[] args;
 
-    // ¸í·É¾î¿Í ÀÎÀÚ¸¦ ºĞ¸®
+    // ëª…ë ¹ì–´ì™€ ì¸ìë¥¼ ë¶„ë¦¬
     public Rq(String command) {
-    	// »ç¿ëÀÚ°¡ ÀÔ·ÂÇÏÁö ¾Ê¾Ò°Å³ª °ø¹é¸¸ ÀÔ·ÂÇÑ °æ¿ì
+    	// ì‚¬ìš©ìê°€ ì…ë ¥í•˜ì§€ ì•Šì•˜ê±°ë‚˜ ê³µë°±ë§Œ ì…ë ¥í•œ ê²½ìš°
         if (command == null || command.trim().equals("")) {
             actionName = "";
             args = new String[0];
             return;
         }
 
-        // °ø¹é Á¦°Å
+        // ê³µë°± ì œê±°
         String[] parts = command.trim().split(" ");
         actionName = parts[0];
 

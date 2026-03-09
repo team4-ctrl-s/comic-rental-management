@@ -2,10 +2,10 @@ public class Main {
 	
 	public static void main(String[] args) {
 		
-		// App 按眉 积己
+		// App 臧濎泊 靸濎劚
 		App app = new App();
 		
-		// 橇肺弊伐 角青
+		// 頂勲攴鸽灗 鞁ろ枆
 		app.run();
 	}
 }
