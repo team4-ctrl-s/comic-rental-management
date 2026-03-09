@@ -1,6 +1,9 @@
+import java.sql.Connection;
 import java.util.Scanner;
 
 public class App {
+    // DB 연결 실행 테스트
+    Connection conn = DBUtil.getConnection();
 
     private Scanner sc;
 
