@@ -5,6 +5,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 public class ComicRepository {
     // DB 연결 객체를 저장
@@ -48,5 +50,34 @@ public class ComicRepository {
         }
 
         return -1;
+    }
+
+    // 전체 만화책 목록을 번호순으로 조회
+    public List<Comic> listComics() {
+        List<Comic> comics = new ArrayList<>();
+        String sql = "SELECT id, title, volume, author, is_rented, reg_date FROM comic ORDER BY id ASC";
+
+        try (PreparedStatement pstmt = conn.prepareStatement(sql);
+             ResultSet rs = pstmt.executeQuery()) {
+
+            // 조회된 데이터를 Comic 객체로 변환하여 리스트에 저장
+            while (rs.next()) {
+                Comic comic = new Comic(
+                    rs.getInt("id"),
+                    rs.getString("title"),
+                    rs.getInt("volume"),
+                    rs.getString("author"),
+                    rs.getBoolean("is_rented"),
+                    rs.getString("reg_date")
+                );
+
+                comics.add(comic);
+            }
+        } catch (SQLException e) {
+            System.out.println("만화책 목록 조회 중 오류가 발생했습니다.");
+            e.printStackTrace();
+        }
+
+        return comics;
     }
 }
