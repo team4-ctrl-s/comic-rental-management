@@ -1,4 +1,5 @@
 import java.sql.Connection;
+import java.util.List;
 import java.util.Scanner;
 
 public class App {
@@ -197,13 +198,30 @@ public class App {
     // comic-list
     // =========================
     private void actionComicList() {
-        // TODO:
-        // ComicRepository.listComics() 호출
-        // DB에서 전체 목록 조회 후 출력
+        // DB에서 전체 만화책 목록 조회
+        List<Comic> comics = comicRepository.listComics();
+
+        // 조회 결과가 없으면 안내 메시지 출력
+        if (comics.isEmpty()) {
+            System.out.println("등록된 만화책이 없습니다.");
+            return;
+        }
 
         System.out.println("번호 | 제목 | 권수 | 작가 | 상태 | 등록일");
         System.out.println("--------------------------------------------------");
-        System.out.println("1 | 슬램덩크 | 1 | 이노우에 다케히코 | 대여가능 | 2026-03-03");
+
+        // 번호순으로 조회된 만화책 목록 출력
+        for (Comic comic : comics) {
+            String rentStatus = comic.isRented() ? "대여중" : "대여가능";
+
+            System.out.printf("%d | %s | %d | %s | %s | %s%n",
+                comic.getId(),
+                comic.getTitle(),
+                comic.getVolume(),
+                comic.getAuthor(),
+                rentStatus,
+                comic.getRegDate());
+        }
     }
 
     // =========================
