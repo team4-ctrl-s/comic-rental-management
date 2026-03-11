@@ -24,3 +24,26 @@ public class MemberRepository {
             System.err.println("회원 등록 중 오류 발생: " + e.getMessage());
         }
     }
+
+    // 회원 목록 조회 (R: Read)
+    public List<Member> findAll() {
+        List<Member> members = new ArrayList<>();
+        String sql = "SELECT id, name, phone, reg_date FROM member ORDER BY id DESC";
+        
+        try (Statement stmt = conn.createStatement();
+             ResultSet rs = stmt.executeQuery(sql)) {
+            
+            while (rs.next()) {
+                members.add(new Member(
+                    rs.getInt("id"),
+                    rs.getString("name"),
+                    rs.getString("phone"),
+                    rs.getString("reg_date")
+                ));
+            }
+        } catch (SQLException e) {
+            System.err.println("목록 조회 중 오류 발생: " + e.getMessage());
+        }
+        return members;
+    }
+}
