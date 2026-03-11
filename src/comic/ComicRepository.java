@@ -80,4 +80,33 @@ public class ComicRepository {
 
         return comics;
     }
+
+    // 번호로 만화책 1건을 조회
+    public Comic findComicById(int id) {
+        String sql = "SELECT id, title, volume, author, is_rented, reg_date FROM comic WHERE id = ?";
+
+        try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setInt(1, id);
+
+            try (ResultSet rs = pstmt.executeQuery()) {
+                // 조회 결과가 있으면 Comic 객체로 반환
+                if (rs.next()) {
+                    return new Comic(
+                        rs.getInt("id"),
+                        rs.getString("title"),
+                        rs.getInt("volume"),
+                        rs.getString("author"),
+                        rs.getBoolean("is_rented"),
+                        rs.getString("reg_date")
+                    );
+                }
+            }
+        } catch (SQLException e) {
+            System.out.println("만화책 상세 조회 중 오류가 발생했습니다.");
+            e.printStackTrace();
+        }
+
+        // 조회 결과가 없으면 null 반환
+        return null;
+    }
 }
