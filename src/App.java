@@ -1,6 +1,7 @@
 import java.sql.Connection;
 import java.util.List;
 import java.util.Scanner;
+import member.MemberRepository;
 
 public class App {
     // DB 연결 객체
@@ -11,10 +12,12 @@ public class App {
 
     // 만화책 DB 처리 객체
     private ComicRepository comicRepository;
+    private MemberRepository memberRepository; // 추가
 
     public App() {
         sc = new Scanner(System.in);
         comicRepository = new ComicRepository(conn);
+        memberRepository = new MemberRepository(conn); // 추가
     }
 
     // 프로그램 실행 메서드
@@ -334,15 +337,17 @@ public class App {
     // =========================
     private void actionMemberAdd() {
         System.out.print("이름: ");
-        String name = sc.nextLine();
+        String name = sc.nextLine().trim();
 
         System.out.print("전화번호: ");
-        String phone = sc.nextLine();
+        String phone = sc.nextLine().trim();
 
-        // TODO:
-        // MemberRepository.addMember(name, phone) 호출
+        if (name.isEmpty() || phone.isEmpty()) {
+            System.out.println("이름과 전화번호를 모두 입력해주세요.");
+            return;
+        }
 
-        System.out.println("=> 회원이 등록되었습니다. (id=1)");
+        memberRepository.insert(name, phone);
     }
 
     // =========================
