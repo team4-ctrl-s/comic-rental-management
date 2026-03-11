@@ -10,14 +10,14 @@ public class App {
     // 콘솔 입력용 스캐너
     private Scanner sc;
 
-    // 만화책 DB 처리 객체
+    // 만화책 / 회원 DB 처리 객체
     private ComicRepository comicRepository;
-    private MemberRepository memberRepository; // 추가
+    private MemberRepository memberRepository;
 
     public App() {
         sc = new Scanner(System.in);
         comicRepository = new ComicRepository(conn);
-        memberRepository = new MemberRepository(conn); // 추가
+        memberRepository = new MemberRepository(conn);
     }
 
     // 프로그램 실행 메서드
@@ -274,34 +274,70 @@ public class App {
             return;
         }
 
-        String comicId = rq.getArg(0);
-
+        int comicId;
         try {
-            Integer.parseInt(comicId);
+            // 수정 대상 번호를 숫자로 변환
+            comicId = Integer.parseInt(rq.getArg(0));
         } catch (NumberFormatException e) {
             System.out.println("만화책 번호는 숫자로 입력해주세요.");
             return;
         }
 
-        System.out.print("새 제목: ");
-        String newTitle = sc.nextLine();
+        // 수정 전 기존 만화책 정보를 조회
+        Comic comic = comicRepository.findComicById(comicId);
 
-        System.out.print("새 권수: ");
-        String newVolumeStr = sc.nextLine();
-
-        System.out.print("새 작가: ");
-        String newAuthor = sc.nextLine();
-
-        int newVolume;
-        try {
-            newVolume = Integer.parseInt(newVolumeStr);
-        } catch (NumberFormatException e) {
-            System.out.println("권수는 숫자로 입력해주세요.");
+        // 조회 결과가 없으면 수정할 수 없음
+        if (comic == null) {
+            System.out.println("해당 번호의 만화책이 존재하지 않습니다.");
             return;
         }
 
-        // TODO:
-        // ComicRepository.updateComic(comicId, newTitle, newVolume, newAuthor) 호출
+        System.out.print("새 제목(현재: " + comic.getTitle() + "): ");
+        String newTitle = sc.nextLine().trim();
+
+        System.out.print("새 권수(현재: " + comic.getVolume() + "): ");
+        String newVolumeStr = sc.nextLine().trim();
+
+        System.out.print("새 작가(현재: " + comic.getAuthor() + "): ");
+        String newAuthor = sc.nextLine().trim();
+
+        // 제목을 비우면 기존 제목 유지
+        if (newTitle.isEmpty()) {
+            newTitle = comic.getTitle();
+        }
+
+        // 작가를 비우면 기존 작가 유지
+        if (newAuthor.isEmpty()) {
+            newAuthor = comic.getAuthor();
+        }
+
+        int newVolume;
+        if (newVolumeStr.isEmpty()) {
+            // 권수를 비우면 기존 권수 유지
+            newVolume = comic.getVolume();
+        } else {
+            try {
+                // 새 권수는 숫자로 변환
+                newVolume = Integer.parseInt(newVolumeStr);
+            } catch (NumberFormatException e) {
+                System.out.println("권수는 숫자로 입력해주세요.");
+                return;
+            }
+        }
+
+        // 권수는 1 이상만 허용
+        if (newVolume <= 0) {
+            System.out.println("권수는 1 이상으로 입력해주세요.");
+            return;
+        }
+
+        // 수정 결과를 DB에 반영
+        boolean isUpdated = comicRepository.updateComic(comicId, newTitle, newVolume, newAuthor);
+
+        if (!isUpdated) {
+            System.out.println("만화책 수정에 실패했습니다.");
+            return;
+        }
 
         System.out.println("=> 만화책이 수정되었습니다. (id=" + comicId + ")");
     }
