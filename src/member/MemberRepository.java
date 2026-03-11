@@ -24,3 +24,4 @@ public class MemberRepository {
             System.err.println("회원 등록 중 오류 발생: " + e.getMessage());
         }
     }
+}
