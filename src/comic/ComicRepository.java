@@ -109,4 +109,24 @@ public class ComicRepository {
         // 조회 결과가 없으면 null 반환
         return null;
     }
+
+    // 번호로 만화책 정보를 수정
+    public boolean updateComic(int id, String title, int volume, String author) {
+        String sql = "UPDATE comic SET title = ?, volume = ?, author = ? WHERE id = ?";
+
+        try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setString(1, title);
+            pstmt.setInt(2, volume);
+            pstmt.setString(3, author);
+            pstmt.setInt(4, id);
+
+            // 수정된 행이 있으면 true 반환
+            return pstmt.executeUpdate() > 0;
+        } catch (SQLException e) {
+            System.out.println("만화책 수정 중 오류가 발생했습니다.");
+            e.printStackTrace();
+        }
+
+        return false;
+    }
 }
