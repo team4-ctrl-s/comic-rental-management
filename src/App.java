@@ -237,21 +237,31 @@ public class App {
             return;
         }
 
-        String comicId = rq.getArg(0);
-
-        // 숫자인지 기본 검증
+        int comicId;
         try {
-            Integer.parseInt(comicId);
+            // 상세보기 대상 번호를 숫자로 변환
+            comicId = Integer.parseInt(rq.getArg(0));
         } catch (NumberFormatException e) {
             System.out.println("만화책 번호는 숫자로 입력해주세요.");
             return;
         }
 
-        // TODO:
-        // ComicRepository.showComicDetail(comicId) 호출
+        // 번호로 만화책 1건 조회
+        Comic comic = comicRepository.findComicById(comicId);
 
-        System.out.println("[만화책 상세보기 기능 연결 예정]");
-        System.out.println("입력한 만화책 번호: " + comicId);
+        // 조회 결과가 없으면 안내 메시지 출력
+        if (comic == null) {
+            System.out.println("해당 번호의 만화책이 존재하지 않습니다.");
+            return;
+        }
+
+        // 상세 정보 출력
+        System.out.println("번호: " + comic.getId());
+        System.out.println("제목: " + comic.getTitle());
+        System.out.println("권수: " + comic.getVolume());
+        System.out.println("작가: " + comic.getAuthor());
+        System.out.println("상태: " + (comic.isRented() ? "대여중" : "대여가능"));
+        System.out.println("등록일: " + comic.getRegDate());
     }
 
     // =========================
