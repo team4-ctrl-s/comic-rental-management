@@ -355,14 +355,27 @@ public class App {
     // member-list
     // =========================
     private void actionMemberList() {
-        // TODO:
-        // MemberRepository.listMembers() 호출
+        // 1. DB에서 전체 회원 목록 조회 
+        List<Member> members = memberRepository.findAll();
 
-        System.out.println("회원id | 이름 | 전화번호 | 등록일");
-        System.out.println("--------------------------------------");
-        System.out.println("1 | 에밀리 | 010-1111-2222 | 2026-03-03");
+        // 2. 조회 결과가 없으면 안내 메시지 출력
+        if (members.isEmpty()) {
+            System.out.println("등록된 회원이 없습니다.");
+            return;
+        }
+
+        System.out.println("번호 | 이름 | 전화번호 | 등록일");
+        System.out.println("--------------------------------------------------");
+
+        // 3. 회원 정보 출력
+        for (Member member : members) {
+            System.out.printf("%d | %s | %s | %s%n",
+                member.getId(),
+                member.getName(),
+                member.getPhone(),
+                member.getRegDate());
+        }
     }
-
     // =========================
     // 대여
     // rent [comicId] [memberId]
