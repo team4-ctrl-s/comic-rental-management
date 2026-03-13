@@ -1,7 +1,10 @@
 import java.sql.Connection;
 import java.util.List;
 import java.util.Scanner;
+import member.Member;
 import member.MemberRepository;
+import comic.Comic; 
+import comic.ComicRepository;
 
 public class App {
     // DB 연결 객체
