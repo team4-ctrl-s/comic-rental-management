@@ -1,3 +1,5 @@
+package comic;
+
 public class Comic {
     // 만화책 번호
     private int id;
