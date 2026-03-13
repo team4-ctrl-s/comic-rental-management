@@ -28,7 +28,7 @@ public class MemberRepository {
     // 회원 목록 조회 (R: Read)
     public List<Member> findAll() {
         List<Member> members = new ArrayList<>();
-        String sql = "SELECT id, name, phone, reg_date FROM member ORDER BY id DESC";
+        String sql = "SELECT id, name, phone, reg_date FROM member ORDER BY id ASC"; // 가입순(오름차순)
         
         try (Statement stmt = conn.createStatement();
              ResultSet rs = stmt.executeQuery(sql)) {
