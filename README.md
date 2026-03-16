@@ -1,147 +1,298 @@
-﻿## Git 협업 컨벤션
+﻿# 만화책 대여점 CLI 프로그램
 
-현재 프로젝트 규모와 진행 단계에서는 **`main` + 작업 브랜치(feature branch)** 전략으로 협업합니다.  
-모든 작업은 브랜치를 따서 진행하고, 완료 후 **Pull Request(PR)** 로 병합합니다.
-
-### 1. 브랜치 전략
-
-- `main`
-  - 최종 제출/실행 가능한 안정 버전만 유지합니다.
-  - 직접 push 하지 않습니다.
-- 작업 브랜치
-  - 모든 기능 개발, 버그 수정, 문서 작업은 별도 브랜치에서 진행합니다.
-  - 작업 완료 후 PR을 통해 `main` 브랜치에 merge 합니다.
-  - merge 완료 후 작업 브랜치는 삭제합니다.
+Java, JDBC, MySQL을 이용해 구현한 **만화책 대여점 CLI 관리 프로그램**입니다.  
+콘솔 환경에서 만화책 등록/조회/수정/삭제, 회원 등록/조회, 대여/반납/대여 목록 조회 기능을 제공합니다.
 
 ---
 
-### 2. 브랜치 네이밍 규칙
+## 1. 프로젝트 소개
 
-형식
+이 프로젝트는 만화책 대여점을 콘솔에서 관리할 수 있도록 만든 CLI 프로그램입니다.
 
-`prefix/작업내용`
+사용자는 명령어를 입력하여 다음 작업을 수행할 수 있습니다.
 
-작성 규칙
+- 만화책 등록 / 목록 조회 / 상세 조회 / 수정 / 삭제
+- 회원 등록 / 목록 조회
+- 만화책 대여 / 반납 / 대여 목록 조회
+- 도움말 확인 / 프로그램 종료
 
-- prefix는 아래 표의 값을 사용.
-- 작업내용은 **영어 소문자 + 하이픈(-)** 으로 작성.
-- 브랜치 1개에는 **하나의 작업 주제만**.
-- 너무 넓은 이름보다 기능 단위로 구체적으로 작성.
-
-| prefix | 의미 | 예시 |
-| --- | --- | --- |
-| `feat` | 새로운 기능 추가 | `feat/comic-add` |
-| `fix` | 버그 수정 | `fix/rent-duplicate-check` |
-| `refactor` | 기능 변화 없는 구조 개선 | `refactor/comic-repository` |
-| `docs` | 문서 수정 | `docs/readme-git-convention` |
-| `test` | 테스트 코드 추가/수정 | `test/member-repository` |
-| `chore` | 설정, 의존성, 기타 작업 | `chore/mysql-config` |
-
-브랜치 예시
-
-- `feat/comic-add`
-- `feat/comic-list`
-- `feat/member-add`
-- `feat/rent-comic`
-- `feat/return-comic`
-- `fix/return-validation`
-- `refactor/db-util`
-- `docs/readme-update`
+모든 데이터는 **MySQL 데이터베이스**에 저장되며, **JDBC**를 통해 DB와 연동합니다.
 
 ---
 
-### 3. 커밋 메시지 규칙
+## 2. 구현 기능 목록
 
-형식
+### 만화책 기능
+- 만화책 등록
+- 만화책 목록 조회
+- 만화책 상세 조회
+- 만화책 수정
+- 만화책 삭제
+    - `is_deleted` 컬럼을 이용한 **Soft Delete 방식** 적용
+    - 삭제된 만화책은 목록/상세/수정 대상에서 제외
 
-`type: 작업 내용`
+### 회원 기능
+- 회원 등록
+- 회원 목록 조회
 
-예시
+### 대여 기능
+- 만화책 대여
+- 만화책 반납
+- 대여 목록 조회
 
-- `feat: 만화책 등록 기능 추가`
-- `feat: 회원 목록 조회 기능 구현`
-- `fix: 대여 중복 체크 오류 수정`
-- `refactor: ComicRepository 조회 메서드 분리`
-- `docs: README에 Git 협업 규칙 추가`
-- `chore: MySQL JDBC 설정 추가`
-
-커밋 타입
-
-| type | 의미 |
-| --- | --- |
-| `feat` | 새로운 기능 추가 |
-| `fix` | 버그 수정 |
-| `refactor` | 기능 변화 없는 코드 개선 |
-| `docs` | 문서 수정 |
-| `style` | 코드 포맷팅, 들여쓰기, 세미콜론 등 스타일 수정 |
-| `test` | 테스트 코드 추가/수정 |
-| `chore` | 설정, 의존성, 빌드 관련 작업 |
-
-커밋 작성 규칙
-
-- 커밋 메시지는 **무엇을 변경했는지 바로 알 수 있게** 작성.
-- `수정`, `업데이트`, `작업중` 같은 모호한 메시지는 X.
-- 기능 추가와 리팩토링은 가능하면 분리해서 커밋.
-- 실행 가능하고 리뷰 가능한 단위로 자주 커밋.
-- 커밋 1개에는 1개의 의미 있는 변경만 담는 것을 원칙.
+### 기타 기능
+- 명령어 파싱
+- 잘못된 입력값 예외 처리
+- DB 연결 및 JDBC CRUD 처리
+- 도움말 출력
+- 프로그램 종료
 
 ---
 
-### 4. PR(Pull Request) 규칙
+## 3. 사용 가능한 명령어
 
-- PR 제목도 커밋 규칙과 동일하게 작성합니다.
-  - 예: `feat: 만화책 상세 조회 기능 추가`
-- PR 본문에는 아래 내용을 간단히 작성합니다.
-  - 작업 내용
-  - 테스트 결과
-  - 리뷰 포인트
-- 팀원 확인 후 merge 하는 것을 원칙으로 합니다.
-- merge 완료 후 작업 브랜치는 삭제합니다.
-
-PR 작성 예시
-
-- 작업 내용: 만화책 등록 기능 구현
-- 테스트 결과: 등록 후 `comic-list`에서 정상 조회 확인
-- 리뷰 포인트: 입력값 검증 방식 확인 요청
-
----
-
-### 5. 작업 순서
-
-1. 작업할 기능 또는 이슈를 확인.
-2. 브랜치를 생성.
-3. 기능 개발 후 의미 단위로 커밋.
-4. PR을 생성.
-5. 리뷰 후 `main` 브랜치에 merge.
-6. 작업 브랜치를 삭제.
+| 구분 | 명령어 | 설명 |
+|---|---|---|
+| 만화책 | `comic-add` | 만화책 등록 |
+| 만화책 | `comic-list` | 만화책 목록 조회 |
+| 만화책 | `comic-detail [id]` | 특정 만화책 상세 조회 |
+| 만화책 | `comic-update [id]` | 특정 만화책 수정 |
+| 만화책 | `comic-delete [id]` | 특정 만화책 삭제(soft delete) |
+| 회원 | `member-add` | 회원 등록 |
+| 회원 | `member-list` | 회원 목록 조회 |
+| 대여 | `rent [comicId] [memberId]` | 만화책 대여 |
+| 대여 | `return [rentalId]` | 만화책 반납 |
+| 대여 | `rental-list` | 대여 목록 조회 |
+| 기타 | `help` | 전체 명령어 목록 출력 |
+| 기타 | `exit` | 프로그램 종료 |
 
 ---
 
-### 7. 프로젝트 기준 예시
+## 4. 프로젝트 구조
 
-브랜치 예시
+```text
+src/
+├─ Main.java                     ← 프로그램 시작점 (main 메서드 실행)
+├─ App.java                      ← 전체 프로그램 실행 및 명령어 처리 로직
+├─ Rq.java                       ← 사용자 입력 명령어 파싱 유틸
+├─ DBUtil.java                   ← JDBC DB 연결 생성 및 자원 반납 유틸
+│
+├─ comic/
+│   ├─ Comic.java                ← 만화책 데이터 클래스 (Entity / DTO)
+│   └─ ComicRepository.java      ← 만화책 관련 DB 처리 (JDBC CRUD)
+│
+├─ member/
+│   ├─ Member.java               ← 회원 데이터 클래스 (Entity / DTO)
+│   └─ MemberRepository.java     ← 회원 관련 DB 처리 (JDBC CRUD)
+│
+└─ rental/
+    ├─ Rental.java               ← 대여 기록 데이터 클래스 (Entity / DTO)
+    └─ RentalRepository.java     ← 대여 / 반납 관련 DB 처리 (JDBC)
+```
 
-- `feat/comic-add`
-- `feat/comic-detail`
-- `feat/comic-update`
-- `feat/member-add`
-- `feat/member-list`
-- `feat/rent-comic`
-- `feat/return-comic`
-- `feat/rental-list`
-- `fix/rental-status-check`
-- `refactor/rental-repository`
-- `docs/readme-update`
+---
 
-커밋 예시
+## 5. 데이터 구조
 
-- `feat: comic-add 명령어 처리 추가`
-- `feat: member-add 기능 구현`
-- `feat: rent 명령어로 대여 처리 구현`
-- `feat: rental-list 출력 기능 추가`
-- `fix: 대여 중인 만화책 중복 대여 방지`
-- `fix: 이미 반납된 대여 건 예외 처리`
-- `refactor: Repository 공통 JDBC 처리 정리`
-- `docs: README에 브랜치 및 커밋 컨벤션 추가`
+### Comic (만화책)
 
-> 위 규칙은 팀 협업을 위한 기본 기준이며, 프로젝트 진행 중 팀 합의에 따라 보완할 수 있습니다.
+```java
+class Comic {
+    int id;
+    String title;
+    int volume;
+    String author;
+    boolean isRented;
+    boolean isDeleted;
+    String regDate;
+}
+```
+
+### Member (회원)
+
+```java
+class Member {
+    int id;
+    String name;
+    String phone;
+    String regDate;
+}
+```
+
+### Rental (대여)
+
+```java
+class Rental {
+    int id;
+    int comicId;
+    int memberId;
+    String rentDate;
+    String returnDate;
+}
+```
+
+---
+
+## 6. 데이터베이스 테이블 생성 쿼리
+
+먼저 데이터베이스를 생성한 뒤 아래 테이블을 생성합니다.
+
+```sql
+CREATE DATABASE comic_rental;
+USE comic_rental;
+
+CREATE TABLE comic (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    title VARCHAR(100) NOT NULL,
+    volume INT NOT NULL,
+    author VARCHAR(100) NOT NULL,
+    is_rented BOOLEAN DEFAULT FALSE,
+    is_deleted BOOLEAN DEFAULT FALSE,
+    reg_date DATE NOT NULL
+);
+
+CREATE TABLE member (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(50) NOT NULL,
+    phone VARCHAR(20),
+    reg_date DATE NOT NULL
+);
+
+CREATE TABLE rental (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    comic_id INT NOT NULL,
+    member_id INT NOT NULL,
+    rent_date DATE NOT NULL,
+    return_date DATE,
+
+    FOREIGN KEY (comic_id) REFERENCES comic(id),
+    FOREIGN KEY (member_id) REFERENCES member(id)
+);
+```
+
+---
+
+## 7. 실행 방법
+
+### 7-1. DB 준비
+1. MySQL 서버를 실행합니다.
+2. 위의 SQL을 실행해 `comic_rental` 데이터베이스와 테이블을 생성합니다.
+
+### 7-2. DB 연결 정보 수정
+`DBUtil.java`에서 본인 환경에 맞게 DB 접속 정보를 수정합니다.
+
+예시:
+
+```java
+private static final String URL =
+    "jdbc:mysql://localhost:3306/comic_rental?serverTimezone=Asia/Seoul&useSSL=false";
+private static final String USER = "root";
+private static final String PASSWORD = "1234";
+```
+
+### 7-3. MySQL JDBC 드라이버 준비
+프로젝트 실행을 위해 **MySQL Connector/J**가 필요합니다.
+
+예를 들어 아래와 같이 jar 파일을 준비합니다.
+
+```text
+project-root/
+├─ lib/
+│  └─ mysql-connector-j-8.3.0.jar
+└─ src/
+```
+
+### 7-4. 컴파일 및 실행
+
+#### Windows
+```bash
+cd src
+javac -cp ".;../lib/mysql-connector-j-8.3.0.jar" Main.java App.java Rq.java DBUtil.java comic/*.java member/*.java rental/*.java
+java -cp ".;../lib/mysql-connector-j-8.3.0.jar" Main
+```
+
+#### macOS / Linux
+```bash
+cd src
+javac -cp ".:../lib/mysql-connector-j-8.3.0.jar" Main.java App.java Rq.java DBUtil.java comic/*.java member/*.java rental/*.java
+java -cp ".:../lib/mysql-connector-j-8.3.0.jar" Main
+```
+
+> 사용하는 JDBC 드라이버 버전에 따라 jar 파일명은 달라질 수 있습니다.
+
+---
+
+## 8. 예시 실행 흐름
+
+```text
+== 만화책 대여점 프로그램 ==
+
+명령어: comic-add
+제목: 슬램덩크
+권수: 1
+작가: 이노우에 다케히코
+=> 만화책이 등록되었습니다. (id=1)
+
+명령어: member-add
+이름: 홍길동
+전화번호: 010-1234-5678
+=> 회원이 등록되었습니다. (id=1)
+
+명령어: rent 1 1
+=> 대여 완료: [대여id=1] 슬램덩크 → 홍길동
+
+명령어: rental-list
+대여번호 | 만화책 | 회원 | 대여일 | 반납일 | 상태
+...
+
+명령어: return 1
+=> 반납 완료: [대여id=1] 슬램덩크 / 홍길동
+```
+
+---
+
+## 9. 삭제 정책
+
+이 프로젝트의 만화책 삭제는 **Soft Delete** 방식으로 처리합니다.
+
+- 실제로 데이터를 DB에서 제거하지 않고
+- `comic.is_deleted = TRUE` 로 변경합니다.
+- 삭제된 만화책은 `comic-list`, `comic-detail`, `comic-update` 대상에서 제외됩니다.
+- 대여 이력은 `rental` 테이블에 그대로 남아 관리됩니다.
+
+---
+
+## 10. 주요 클래스 역할
+
+### `Main.java`
+프로그램 실행 진입점입니다.
+
+### `App.java`
+전체 명령어 흐름을 제어하고, 각 기능 메서드를 호출합니다.
+
+### `Rq.java`
+사용자가 입력한 명령어를 `actionName`과 `args`로 분리합니다.
+
+### `DBUtil.java`
+JDBC 드라이버 로드 및 MySQL DB 연결을 담당합니다.
+
+### `ComicRepository.java`
+만화책 등록, 조회, 수정, 삭제 관련 DB 작업을 담당합니다.
+
+### `MemberRepository.java`
+회원 등록, 목록 조회 등 회원 관련 DB 작업을 담당합니다.
+
+### `RentalRepository.java`
+만화책 대여, 반납, 대여 목록 조회와 같은 대여 관련 DB 작업을 담당합니다.
+
+---
+
+## 11. 개선 가능 포인트
+
+- 회원 상세 조회 / 수정 / 삭제 기능 추가
+- 대여 가능 목록 / 대여 중 목록 필터링
+- 검색 기능 추가
+- 입력 UI 개선
+- 트랜잭션 처리 강화
+- 예외 메시지 정교화
+
