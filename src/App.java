@@ -1,10 +1,13 @@
 import java.sql.Connection;
 import java.util.List;
 import java.util.Scanner;
+
+import comic.Comic;
+import comic.ComicRepository;
 import member.Member;
 import member.MemberRepository;
-import comic.Comic; 
-import comic.ComicRepository;
+import rental.Rental;
+import rental.RentalRepository;
 
 public class App {
     // DB 연결 객체
@@ -13,14 +16,16 @@ public class App {
     // 콘솔 입력용 스캐너
     private Scanner sc;
 
-    // 만화책 / 회원 DB 처리 객체
+    // 만화책 / 회원 / 대여 DB 처리 객체
     private ComicRepository comicRepository;
     private MemberRepository memberRepository;
+    private RentalRepository rentalRepository;
 
     public App() {
         sc = new Scanner(System.in);
         comicRepository = new ComicRepository(conn);
         memberRepository = new MemberRepository(conn);
+        rentalRepository = new RentalRepository(conn);
     }
 
     // 프로그램 실행 메서드
@@ -204,7 +209,7 @@ public class App {
     // comic-list
     // =========================
     private void actionComicList() {
-        // DB에서 전체 만화책 목록 조회
+        // 삭제되지 않은 만화책 목록 조회
         List<Comic> comics = comicRepository.listComics();
 
         // 조회 결과가 없으면 안내 메시지 출력
@@ -254,7 +259,7 @@ public class App {
 
         // 조회 결과가 없으면 안내 메시지 출력
         if (comic == null) {
-            System.out.println("해당 번호의 만화책이 존재하지 않습니다.");
+            System.out.println("해당 번호의 만화책이 존재하지 않거나 이미 삭제되었습니다.");
             return;
         }
 
@@ -291,7 +296,7 @@ public class App {
 
         // 조회 결과가 없으면 수정할 수 없음
         if (comic == null) {
-            System.out.println("해당 번호의 만화책이 존재하지 않습니다.");
+            System.out.println("해당 번호의 만화책이 존재하지 않거나 이미 삭제되었습니다.");
             return;
         }
 
@@ -355,17 +360,36 @@ public class App {
             return;
         }
 
-        String comicId = rq.getArg(0);
-
+        int comicId;
         try {
-            Integer.parseInt(comicId);
+            // 삭제 대상 번호를 숫자로 변환
+            comicId = Integer.parseInt(rq.getArg(0));
         } catch (NumberFormatException e) {
             System.out.println("만화책 번호는 숫자로 입력해주세요.");
             return;
         }
 
-        // TODO:
-        // ComicRepository.deleteComic(comicId) 호출
+        // 삭제 전 만화책 존재 여부 확인
+        Comic comic = comicRepository.findComicById(comicId);
+
+        if (comic == null) {
+            System.out.println("해당 번호의 만화책이 존재하지 않거나 이미 삭제되었습니다.");
+            return;
+        }
+
+        // 현재 대여 중인 만화책은 삭제 불가
+        if (comic.isRented()) {
+            System.out.println("현재 대여 중인 만화책은 삭제할 수 없습니다.");
+            return;
+        }
+
+        // 실제 삭제 대신 soft delete 수행
+        boolean isDeleted = comicRepository.softDeleteComic(comicId);
+
+        if (!isDeleted) {
+            System.out.println("만화책 삭제에 실패했습니다.");
+            return;
+        }
 
         System.out.println("=> 만화책이 삭제되었습니다. (id=" + comicId + ")");
     }
@@ -394,10 +418,10 @@ public class App {
     // member-list
     // =========================
     private void actionMemberList() {
-        // 1. DB에서 전체 회원 목록 조회 
+        // DB에서 전체 회원 목록 조회
         List<Member> members = memberRepository.findAll();
 
-        // 2. 조회 결과가 없으면 안내 메시지 출력
+        // 조회 결과가 없으면 안내 메시지 출력
         if (members.isEmpty()) {
             System.out.println("등록된 회원이 없습니다.");
             return;
@@ -406,7 +430,7 @@ public class App {
         System.out.println("번호 | 이름 | 전화번호 | 등록일");
         System.out.println("--------------------------------------------------");
 
-        // 3. 회원 정보 출력
+        // 회원 정보 출력
         for (Member member : members) {
             System.out.printf("%d | %s | %s | %s%n",
                 member.getId(),
@@ -415,6 +439,7 @@ public class App {
                 member.getRegDate());
         }
     }
+
     // =========================
     // 대여
     // rent [comicId] [memberId]
@@ -425,22 +450,48 @@ public class App {
             return;
         }
 
-        String comicId = rq.getArg(0);
-        String memberId = rq.getArg(1);
+        int comicId;
+        int memberId;
 
         try {
-            Integer.parseInt(comicId);
-            Integer.parseInt(memberId);
+            // 만화책 번호와 회원 번호를 숫자로 변환
+            comicId = Integer.parseInt(rq.getArg(0));
+            memberId = Integer.parseInt(rq.getArg(1));
         } catch (NumberFormatException e) {
             System.out.println("만화책 번호와 회원 번호는 숫자로 입력해주세요.");
             return;
         }
 
-        // TODO:
-        // RentalRepository.rentComic(comicId, memberId) 호출
-        // 대여중 여부 확인, 회원 존재 여부 확인, 대여 처리
+        // 삭제되지 않은 만화책만 대여 가능
+        Comic comic = comicRepository.findComicById(comicId);
+        if (comic == null) {
+            System.out.println("해당 번호의 만화책이 존재하지 않거나 이미 삭제되었습니다.");
+            return;
+        }
 
-        System.out.println("=> 대여 완료: [대여id=1] 만화(" + comicId + ") → 회원(" + memberId + ")");
+        // 회원 존재 여부 확인
+        Member member = findMemberById(memberId);
+        if (member == null) {
+            System.out.println("해당 번호의 회원이 존재하지 않습니다.");
+            return;
+        }
+
+        // 현재 만화책 상태가 이미 대여중이면 중단
+        if (comic.isRented()) {
+            System.out.println("이미 대여 중인 만화책입니다.");
+            return;
+        }
+
+        // 대여 처리
+        Rental rental = rentalRepository.rentComic(comicId, memberId);
+
+        if (rental == null) {
+            System.out.println("이미 대여 중이거나 대여 처리에 실패했습니다.");
+            return;
+        }
+
+        System.out.println("=> 대여 완료: [대여id=" + rental.getId() + "] "
+            + comic.getTitle() + " → " + member.getName());
     }
 
     // =========================
@@ -453,20 +504,46 @@ public class App {
             return;
         }
 
-        String rentalId = rq.getArg(0);
-
+        int rentalId;
         try {
-            Integer.parseInt(rentalId);
+            // 반납할 대여 번호를 숫자로 변환
+            rentalId = Integer.parseInt(rq.getArg(0));
         } catch (NumberFormatException e) {
             System.out.println("대여 번호는 숫자로 입력해주세요.");
             return;
         }
 
-        // TODO:
-        // RentalRepository.returnComic(rentalId) 호출
-        // 이미 반납된 건인지 확인 후 반납 처리
+        // 반납 대상 대여 내역 조회
+        Rental rental = rentalRepository.findById(rentalId);
 
-        System.out.println("=> 반납 완료: 대여id=" + rentalId);
+        if (rental == null) {
+            System.out.println("해당 번호의 대여 내역이 존재하지 않습니다.");
+            return;
+        }
+
+        // 이미 반납된 경우 중단
+        if (rental.isReturned()) {
+            System.out.println("이미 반납된 대여입니다.");
+            return;
+        }
+
+        // 출력용 만화책 / 회원 정보 조회
+        Comic comic = comicRepository.findComicByIdIncludeDeleted(rental.getComicId());
+        Member member = findMemberById(rental.getMemberId());
+
+        String comicTitle = comic != null ? comic.getTitle() : "알 수 없는 만화책";
+        String memberName = member != null ? member.getName() : "알 수 없는 회원";
+
+        // 반납 처리
+        boolean isReturned = rentalRepository.returnComic(rentalId);
+
+        if (!isReturned) {
+            System.out.println("반납 처리에 실패했습니다.");
+            return;
+        }
+
+        System.out.println("=> 반납 완료: [대여id=" + rentalId + "] "
+            + comicTitle + " / " + memberName);
     }
 
     // =========================
@@ -474,12 +551,72 @@ public class App {
     // rental-list
     // =========================
     private void actionRentalList() {
-        // TODO:
-        // RentalRepository.listRentals() 호출
-        // 전체 / 미반납 옵션은 나중에 확장 가능
+        // DB에서 전체 대여 목록 조회
+        List<Rental> rentals = rentalRepository.listRentals();
 
-        System.out.println("대여id | 만화id | 회원id | 대여일 | 반납일");
-        System.out.println("------------------------------------------------");
-        System.out.println("1 | 1 | 1 | 2026-03-03 | -");
+        if (rentals.isEmpty()) {
+            System.out.println("대여 내역이 없습니다.");
+            return;
+        }
+
+        // 삭제된 만화책도 보이도록 전체 만화책 조회
+        List<Comic> comics = comicRepository.listAllComics();
+        List<Member> members = memberRepository.findAll();
+
+        System.out.println("대여번호 | 만화책 | 회원 | 대여일 | 반납일 | 상태");
+        System.out.println("--------------------------------------------------------------------------------");
+
+        for (Rental rental : rentals) {
+            Comic comic = findComicFromList(comics, rental.getComicId());
+            Member member = findMemberFromList(members, rental.getMemberId());
+
+            String comicInfo = comic != null
+                ? comic.getTitle() + "(" + rental.getComicId() + ")"
+                : "알 수 없음(" + rental.getComicId() + ")";
+
+            String memberInfo = member != null
+                ? member.getName() + "(" + rental.getMemberId() + ")"
+                : "알 수 없음(" + rental.getMemberId() + ")";
+
+            String returnDate = rental.getReturnDate() != null
+                ? rental.getReturnDate().toString()
+                : "-";
+
+            String status = rental.isReturned() ? "반납완료" : "대여중";
+
+            System.out.printf("%d | %s | %s | %s | %s | %s%n",
+                rental.getId(),
+                comicInfo,
+                memberInfo,
+                rental.getRentDate(),
+                returnDate,
+                status);
+        }
+    }
+
+    // 회원 번호로 회원 1명 조회
+    private Member findMemberById(int memberId) {
+        List<Member> members = memberRepository.findAll();
+        return findMemberFromList(members, memberId);
+    }
+
+    // 회원 목록에서 번호로 회원 찾기
+    private Member findMemberFromList(List<Member> members, int memberId) {
+        for (Member member : members) {
+            if (member.getId() == memberId) {
+                return member;
+            }
+        }
+        return null;
+    }
+
+    // 만화책 목록에서 번호로 만화책 찾기
+    private Comic findComicFromList(List<Comic> comics, int comicId) {
+        for (Comic comic : comics) {
+            if (comic.getId() == comicId) {
+                return comic;
+            }
+        }
+        return null;
     }
 }

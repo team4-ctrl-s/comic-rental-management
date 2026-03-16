@@ -54,26 +54,18 @@ public class ComicRepository {
         return -1;
     }
 
-    // 전체 만화책 목록을 번호순으로 조회
+    // 삭제되지 않은 만화책 목록을 번호순으로 조회
     public List<Comic> listComics() {
         List<Comic> comics = new ArrayList<>();
-        String sql = "SELECT id, title, volume, author, is_rented, reg_date FROM comic ORDER BY id ASC";
+        String sql = "SELECT id, title, volume, author, is_rented, reg_date "
+            + "FROM comic WHERE is_deleted = FALSE ORDER BY id ASC";
 
         try (PreparedStatement pstmt = conn.prepareStatement(sql);
              ResultSet rs = pstmt.executeQuery()) {
 
             // 조회된 데이터를 Comic 객체로 변환하여 리스트에 저장
             while (rs.next()) {
-                Comic comic = new Comic(
-                    rs.getInt("id"),
-                    rs.getString("title"),
-                    rs.getInt("volume"),
-                    rs.getString("author"),
-                    rs.getBoolean("is_rented"),
-                    rs.getString("reg_date")
-                );
-
-                comics.add(comic);
+                comics.add(mapComic(rs));
             }
         } catch (SQLException e) {
             System.out.println("만화책 목록 조회 중 오류가 발생했습니다.");
@@ -83,9 +75,29 @@ public class ComicRepository {
         return comics;
     }
 
-    // 번호로 만화책 1건을 조회
+    // 대여 목록 출력용으로 삭제된 만화책까지 모두 조회
+    public List<Comic> listAllComics() {
+        List<Comic> comics = new ArrayList<>();
+        String sql = "SELECT id, title, volume, author, is_rented, reg_date FROM comic ORDER BY id ASC";
+
+        try (PreparedStatement pstmt = conn.prepareStatement(sql);
+             ResultSet rs = pstmt.executeQuery()) {
+
+            while (rs.next()) {
+                comics.add(mapComic(rs));
+            }
+        } catch (SQLException e) {
+            System.out.println("전체 만화책 목록 조회 중 오류가 발생했습니다.");
+            e.printStackTrace();
+        }
+
+        return comics;
+    }
+
+    // 번호로 삭제되지 않은 만화책 1건을 조회
     public Comic findComicById(int id) {
-        String sql = "SELECT id, title, volume, author, is_rented, reg_date FROM comic WHERE id = ?";
+        String sql = "SELECT id, title, volume, author, is_rented, reg_date "
+            + "FROM comic WHERE id = ? AND is_deleted = FALSE";
 
         try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
             pstmt.setInt(1, id);
@@ -93,14 +105,7 @@ public class ComicRepository {
             try (ResultSet rs = pstmt.executeQuery()) {
                 // 조회 결과가 있으면 Comic 객체로 반환
                 if (rs.next()) {
-                    return new Comic(
-                        rs.getInt("id"),
-                        rs.getString("title"),
-                        rs.getInt("volume"),
-                        rs.getString("author"),
-                        rs.getBoolean("is_rented"),
-                        rs.getString("reg_date")
-                    );
+                    return mapComic(rs);
                 }
             }
         } catch (SQLException e) {
@@ -112,9 +117,29 @@ public class ComicRepository {
         return null;
     }
 
-    // 번호로 만화책 정보를 수정
+    // 삭제된 만화책 포함하여 번호로 1건 조회
+    public Comic findComicByIdIncludeDeleted(int id) {
+        String sql = "SELECT id, title, volume, author, is_rented, reg_date FROM comic WHERE id = ?";
+
+        try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setInt(1, id);
+
+            try (ResultSet rs = pstmt.executeQuery()) {
+                if (rs.next()) {
+                    return mapComic(rs);
+                }
+            }
+        } catch (SQLException e) {
+            System.out.println("만화책 조회 중 오류가 발생했습니다.");
+            e.printStackTrace();
+        }
+
+        return null;
+    }
+
+    // 번호로 삭제되지 않은 만화책 정보를 수정
     public boolean updateComic(int id, String title, int volume, String author) {
-        String sql = "UPDATE comic SET title = ?, volume = ?, author = ? WHERE id = ?";
+        String sql = "UPDATE comic SET title = ?, volume = ?, author = ? WHERE id = ? AND is_deleted = FALSE";
 
         try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
             pstmt.setString(1, title);
@@ -130,5 +155,33 @@ public class ComicRepository {
         }
 
         return false;
+    }
+
+    // 현재 대여 중이 아닌 만화책을 soft delete 처리
+    public boolean softDeleteComic(int id) {
+        String sql = "UPDATE comic SET is_deleted = TRUE WHERE id = ? AND is_rented = FALSE AND is_deleted = FALSE";
+
+        try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setInt(1, id);
+
+            return pstmt.executeUpdate() > 0;
+        } catch (SQLException e) {
+            System.out.println("만화책 삭제 중 오류가 발생했습니다.");
+            e.printStackTrace();
+        }
+
+        return false;
+    }
+
+    // ResultSet 데이터를 Comic 객체로 변환
+    private Comic mapComic(ResultSet rs) throws SQLException {
+        return new Comic(
+            rs.getInt("id"),
+            rs.getString("title"),
+            rs.getInt("volume"),
+            rs.getString("author"),
+            rs.getBoolean("is_rented"),
+            rs.getString("reg_date")
+        );
     }
 }
